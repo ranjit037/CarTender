@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import SDWebImage
+import RealmSwift
 
 class CarListCell: UITableViewCell {
+
+    var carImageList : List<ImageList> = List<ImageList>()
 
     @IBOutlet weak var vwMain: UIView!
     @IBOutlet var titleLables: [UILabel]!
@@ -28,6 +32,31 @@ class CarListCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+
+    func setupCell(objData: SellingList) {
+
+        titleLables[0].text = "\(objData.year) \(objData.make)"
+        titleLables[1].text = objData.model
+        titleLables[2].text = objData.miles + " miles"
+        bottomLables[0].text = objData.distance + " miles away"
+        bottomLables[1].text = " $" + objData.price
+
+        switch CAR_STATUS(rawValue: objData.status) {
+        case .none:
+            break
+        case .some(let values):
+            switch values {
+            case .SOLD:
+                bottomLables[1].backgroundColor = .red
+                break
+            case .UNSOLD:
+                bottomLables[1].backgroundColor = #colorLiteral(red: 0.2235294118, green: 0.8235294118, blue: 0.6117647059, alpha: 1)
+                break
+            }
+        }
+        self.carImageList = objData.imagelists
+        self.collectionCarImages.reloadData()
+    }
     
 }
 
@@ -35,13 +64,32 @@ class CarListCell: UITableViewCell {
 extension CarListCell: UICollectionViewDelegate,UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return carImageList.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: idImageListCell, for: indexPath) as! ImageListCell
 
+        let imageListData = carImageList[indexPath.row]
+
+        cell.imgVWCar.sd_cancelCurrentImageLoad()
+        if let image = GET_IMAGE_FROM_DIRECTORY(imageName: MEDIA_URL.LOCAL.rawValue + imageListData.imageName) {
+//            cell.imgVWCar.sd_imageIndicator = nil
+            cell.imgVWCar.image = image
+        }
+        else {
+            cell.imgVWCar.sd_imageIndicator = SDWebImageActivityIndicator.grayLarge
+            cell.imgVWCar.sd_setImage(with: URL(string: MEDIA_URL.SERVER.rawValue + "\(imageListData.parent_id)/\(imageListData.imageName)"),
+                                      placeholderImage: #imageLiteral(resourceName: "carPlaceholderImage"),
+                                      options: [.refreshCached]) { (img, err, cacheType, url) in
+                                        if img != nil {
+                                            SAVE_IMAGE_IN_DIRECTORY(directoryname: MEDIA_URL.LOCAL.rawValue,
+                                                                    chosenImage: img!,
+                                                                    filename: imageListData.imageName)
+                                        }
+            }
+        }
         return cell
     }
 

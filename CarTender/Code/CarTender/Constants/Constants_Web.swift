@@ -11,7 +11,6 @@ import UIKit
 import CoreLocation
 
 let Server_URL = "http://push.cartradernow.com/"
-//let MEDIA_URL = "\(Server_URL)/"
 
 //HEADER KEYS
 let CONTENT_TYPE = "content-type"
@@ -35,6 +34,10 @@ public enum WSRequestType : Int {
     case GetSellingList
 }
 
+enum MEDIA_URL:String {
+    case SERVER = "http://push.cartradernow.com/CarTrader/images/advertiseImages/"
+    case LOCAL = "CarImages/"
+}
 
 struct WebServicePrefix
 {

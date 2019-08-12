@@ -10,7 +10,6 @@ import Foundation
 import RealmSwift
 
 class ImageList : Object{
-
+    @objc dynamic var parent_id = -1
     @objc dynamic var imageName = ""
-    let carImage = LinkingObjects(fromType: SellingList.self, property: "imagelists")
 }

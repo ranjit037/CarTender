@@ -10,6 +10,6 @@ import Foundation
 import RealmSwift
 
 class VideoList : Object{
-
+    @objc dynamic var parent_id = -1
     @objc dynamic var videoName = ""
 }

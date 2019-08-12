@@ -15,6 +15,11 @@ class ImageListCell: UICollectionViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        imgVWCar.image = #imageLiteral(resourceName: "carPlaceholderImage")
+    }
+
+    override func prepareForReuse() {
+        imgVWCar.image = #imageLiteral(resourceName: "carPlaceholderImage")
     }
 
 }

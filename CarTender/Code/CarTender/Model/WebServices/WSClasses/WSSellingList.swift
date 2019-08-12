@@ -34,6 +34,14 @@ class WSSellingList : NSObject, NSCoding{
         shareurl = dictionary["shareurl"] as? String
         status = dictionary["status"] as? String
         year = dictionary["year"] as? String
+
+        if let imageArray = dictionary["imagelist"] as? [String]{
+            imagelist = imageArray
+        }
+
+        if let videoArray = dictionary["videolist"] as? [String]{
+            videolist = videoArray
+        }
     }
 
     /**
@@ -68,6 +76,12 @@ class WSSellingList : NSObject, NSCoding{
         }
         if year != nil{
             dictionary["year"] = year
+        }
+        if imagelist != nil{
+            dictionary["imagelist"] = imagelist
+        }
+        if videolist != nil{
+            dictionary["videolist"] = videolist
         }
         return dictionary
     }

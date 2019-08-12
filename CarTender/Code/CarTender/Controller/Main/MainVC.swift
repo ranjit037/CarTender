@@ -17,18 +17,22 @@ class MainVC: BaseVC {
     var nextAvaialable = true
     var sellingLists : Results<SellingList>?
     var currentAddress = "Unknown address."
+    let realm = try? Realm()
 
     // outlets
     @IBOutlet weak var vwStausbar:UIView!
     @IBOutlet weak var tblCarList: UITableView!
-    
+    @IBOutlet weak var tblFooterView: UIView!
+    @IBOutlet weak var spinnerIndicator: UIActivityIndicatorView!
+    @IBOutlet weak var lblLoadMore: UILabel!
+
     override func viewDidLoad() {
         super.viewDidLoad()
         tblCarList.delegate = self
         tblCarList.dataSource = self
         tblCarList.register(UINib(nibName: xibCarListHeaderCell, bundle: nil), forCellReuseIdentifier: idCarListHeaderCell)
         tblCarList.register(UINib(nibName: xibCarListCell, bundle: nil), forCellReuseIdentifier: idCarListCell)
-        tblCarList.tableFooterView = UIView()
+        tblCarList.tableFooterView = self.tblFooterView
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.updateCurrentLocation),
@@ -38,7 +42,7 @@ class MainVC: BaseVC {
 
 
         print(Realm.Configuration.defaultConfiguration.fileURL!)
-        self.callGetSellingListAPI(showloader: true)
+        self.callGetSellingListAPI()
         
     }
 
@@ -74,26 +78,7 @@ extension MainVC: UITableViewDelegate,UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if let cell = tableView.dequeueReusableCell(withIdentifier: idCarListCell, for: indexPath) as? CarListCell {
             if let data = sellingLists?[indexPath.row] {
-                cell.titleLables[0].text = "\(data.year) \(data.make)"
-                cell.titleLables[1].text = data.model
-                cell.titleLables[2].text = data.miles + " miles"
-                cell.bottomLables[0].text = data.distance + " miles away"
-                cell.bottomLables[1].text = " $" + data.price
-
-                switch CAR_STATUS(rawValue:data.status) {
-                case .none:
-                    break
-                case .some(let values):
-                    switch values {
-                    case .SOLD:
-                        cell.bottomLables[1].backgroundColor = .red
-                        break
-                    case .UNSOLD:
-                        cell.bottomLables[1].backgroundColor = #colorLiteral(red: 0.2235294118, green: 0.8235294118, blue: 0.6117647059, alpha: 1)
-                        break
-                    }
-                }
-
+                cell.setupCell(objData: data)
                 return cell
             }
         }
@@ -102,7 +87,7 @@ extension MainVC: UITableViewDelegate,UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == (self.sellingLists?.count ?? 0) - 1 {
-            self.callGetSellingListAPI(showloader: false)
+            self.callGetSellingListAPI()
         }
     }
 
@@ -118,131 +103,119 @@ extension MainVC: UITableViewDelegate,UITableViewDataSource {
 //MARK:- API Calls
 extension MainVC {
 
-    func callGetSellingListAPI(showloader:Bool) {
+    func callGetSellingListAPI() {
 
-        if nextAvaialable {
+        if(NetworkReachabilityManager()?.isReachable ?? false)
+        {
+            if nextAvaialable {
 
-            if showloader {
-                NIPLProgressHUD.show()
-            }
+                let latitude = APP_DELEGATE.objLocManager?.location?.coordinate.latitude ?? 23.0122
+                let longitude = APP_DELEGATE.objLocManager?.location?.coordinate.longitude ?? 72.122
 
-            let latitude = APP_DELEGATE.objLocManager?.location?.coordinate.latitude ?? 23.0122
-            let longitude = APP_DELEGATE.objLocManager?.location?.coordinate.longitude ?? 72.122
+                let subParam:NSDictionary = [
+                    "latitude":latitude,
+                    "longitude":longitude,
+                    "pageIndex":"\(currentPageIndex)",
+                    "pageSize":"10",
+                    "sorttype":"-1"
+                ]
+                let param:NSDictionary = ["request": subParam]
+                let headers = [
+                    CONTENT_TYPE:"application/json"
+                ]
 
-            let subParam:NSDictionary = [
-                "latitude":latitude,
-                "longitude":longitude,
-                "pageIndex":"\(currentPageIndex)",
-                "pageSize":"10",
-                "sorttype":"-1"
-            ]
-            let param:NSDictionary = ["request": subParam]
-            let headers = [
-                CONTENT_TYPE:"application/json"
-            ]
+                DispatchQueue.global(qos: .background).async {
+                    Alamofire.SessionManager.default.request(WebServicePrefix.GetWSUrl(serviceType: WSRequestType.GetSellingList),
+                                                             method: .post,
+                                                             parameters: param as? Parameters,
+                                                             encoding: JSONEncoding.default,
+                                                             headers: headers)
 
-            DispatchQueue.global(qos: .background).async {
-                Alamofire.SessionManager.default.request(WebServicePrefix.GetWSUrl(serviceType: WSRequestType.GetSellingList),
-                                                         method: .post,
-                                                         parameters: param as? Parameters,
-                                                         encoding: JSONEncoding.default,
-                                                         headers: headers)
-
-                    .responseJSON { (response:DataResponse<Any>) in
-                        NIPLProgressHUD.dismiss()
-                        switch(response.result)
-                        {
-                        case .success(_):
-                            if let data = response.result.value
+                        .responseJSON { (response:DataResponse<Any>) in
+                            switch(response.result)
                             {
-                                if let responseDict = data as? [String : Any] {
+                            case .success(_):
+                                if let data = response.result.value
+                                {
+                                    if let responseDict = data as? [String : Any] {
 
-                                    let respObj = WSBaseSellingList.init(fromDictionary: responseDict)
-                                    if let result = respObj.getSellingListResult {
-                                        if result.isnext.asStringOrEmpty(defaultValue: "0") == "0"  {
-                                            self.nextAvaialable = false
-                                        }
-                                        if let sellingListData = result.sellingList {
-                                            self.currentPageIndex += 1
-                                            var arrSellingList = [SellingList]()
-
-                                            for objSelling in sellingListData { // 4
-                                                let newSellingList = SellingList()
-
-                                                newSellingList.id = objSelling.id.aIntOrEmpty()
-                                                newSellingList.distance = objSelling.distance.asStringOrEmpty()
-                                                newSellingList.make = objSelling.make.asStringOrEmpty()
-                                                newSellingList.miles = objSelling.miles.asStringOrEmpty()
-                                                newSellingList.model = objSelling.model.asStringOrEmpty()
-                                                newSellingList.price = objSelling.price.asStringOrEmpty()
-                                                newSellingList.shareurl = objSelling.shareurl.asStringOrEmpty()
-                                                newSellingList.status = objSelling.status.asStringOrEmpty()
-                                                newSellingList.year = objSelling.year.asStringOrEmpty()
-
-                                                if let valueImages = objSelling.imagelist {
-                                                    var arrImageList = [ImageList]()
-                                                    for objValue in valueImages {
-                                                        arrImageList.append(ImageList(value: ["imageName": objValue]))
-                                                    }
-                                                    newSellingList.imagelists.append(objectsIn: arrImageList)
-                                                }
-
-                                                if let valueVideo = objSelling.videolist {
-                                                    for objValue in valueVideo {
-                                                        newSellingList.videolist.append(VideoList(value: ["videoName": objValue]))
-                                                    }
-                                                }
-
-                                                arrSellingList.append(newSellingList)
+                                        let respObj = WSBaseSellingList.init(fromDictionary: responseDict)
+                                        if let result = respObj.getSellingListResult {
+                                            if result.isnext.asStringOrEmpty(defaultValue: "0") == "0"  {
+                                                self.nextAvaialable = false
                                             }
+                                            if let sellingListData = result.sellingList {
+                                                self.currentPageIndex += 1
+                                                var arrSellingList = [SellingList]()
 
-                                            if arrSellingList.count > 0 {
-                                                do {
+                                                for objSelling in sellingListData { // 4
+                                                    let newSellingList = SellingList()
 
-                                                    let realm = try Realm()
-                                                    try realm.write({ () -> Void in
-                                                        realm.add(arrSellingList, update: .modified)
-                                                    })
-                                                    self.sellingLists = realm.objects(SellingList.self)
-                                                    DispatchQueue.main.async {
-                                                        self.tblCarList.reloadData()
+                                                    newSellingList.id = objSelling.id.aIntOrEmpty()
+                                                    newSellingList.distance = objSelling.distance.asStringOrEmpty()
+                                                    newSellingList.make = objSelling.make.asStringOrEmpty()
+                                                    newSellingList.miles = objSelling.miles.asStringOrEmpty()
+                                                    newSellingList.model = objSelling.model.asStringOrEmpty()
+                                                    newSellingList.price = objSelling.price.asStringOrEmpty()
+                                                    newSellingList.shareurl = objSelling.shareurl.asStringOrEmpty()
+                                                    newSellingList.status = objSelling.status.asStringOrEmpty()
+                                                    newSellingList.year = objSelling.year.asStringOrEmpty()
+
+                                                    if let valueImages = objSelling.imagelist {
+                                                        for objValue in valueImages {
+                                                            newSellingList.imagelists.append(ImageList(value: ["parent_id":newSellingList.id,"imageName": objValue]))
+                                                        }
                                                     }
-                                                }
-                                                catch let error as NSError {
-                                                    print(error.localizedDescription)
+
+                                                    if let valueVideo = objSelling.videolist {
+                                                        for objValue in valueVideo {
+                                                            newSellingList.videolist.append(VideoList(value: ["parent_id":newSellingList.id,"videoName": objValue]))
+                                                        }
+                                                    }
+                                                    arrSellingList.append(newSellingList)
                                                 }
 
+                                                if arrSellingList.count > 0 {
+                                                    do {
+                                                        try self.realm?.write({ () -> Void in
+                                                            self.realm?.add(arrSellingList, update: .modified)
+                                                        })
+                                                    }
+                                                    catch let error as NSError {
+                                                        print(error.localizedDescription)
+                                                    }
+
+                                                }
+                                                self.sellingLists = self.realm?.objects(SellingList.self)
+                                                DispatchQueue.main.async {
+                                                    self.tblCarList.reloadData()
+                                                }
                                             }
                                         }
                                     }
+                                    else {
+                                        print("error")
+                                    }
                                 }
-                                else {
-                                    print("error")
-                                }
-                            }
-                            break
-                        case .failure(let error):
-                            print(error.localizedDescription)
-
-                            do {
-
-                                let realm = try Realm()
-                                self.sellingLists = realm.objects(SellingList.self)
+                                break
+                            case .failure(let error):
+                                print(error.localizedDescription)
+                                self.sellingLists = self.realm?.objects(SellingList.self)
                                 DispatchQueue.main.async {
                                     self.tblCarList.reloadData()
                                 }
-                            }
-                            catch let error as NSError {
-                                print(error.localizedDescription)
+
+                                break
                             }
 
-                            break
-                        }
-
+                    }
                 }
-            }
 
+            }
+        }
+        else {
+            self.sellingLists = self.realm?.objects(SellingList.self)
+            self.tblCarList.reloadData()
         }
     }
-
 }

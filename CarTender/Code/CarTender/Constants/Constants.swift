@@ -10,6 +10,7 @@ import UIKit
 
 let APP_NAME = "Car Tender"
 let APP_DELEGATE = UIApplication.shared.delegate as! AppDelegate
+let LOADING_MSG = "Please wait..."
 
 //MARK: - StoryBoard name constant
 let STORYBOARD_MAIN = "Main"
@@ -30,6 +31,7 @@ let idImageListCell = "idImageListCell"
 // Notification Center Key
 let NC_UPDATE_CURRENT_LOCATION = "NC_UpdateCurrentLocation"
 
+// Enum
 enum Cell_Header_Labels:Int {
     case leading = 0
     case center
@@ -45,3 +47,4 @@ enum CAR_STATUS:String {
     case SOLD = "SOLD"
     case UNSOLD = "UNSOLD"
 }
+

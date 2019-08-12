@@ -20,7 +20,7 @@ class SellingList : Object{
     @objc dynamic var price = ""
     @objc dynamic var shareurl = ""
     @objc dynamic var status = ""
-    let videolist = List<VideoList>()
+    var videolist = List<VideoList>()
     @objc dynamic var year = ""
 
     override class func primaryKey() -> String? {
