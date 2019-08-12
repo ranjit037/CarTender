@@ -140,100 +140,106 @@ extension MainVC {
             let headers = [
                 CONTENT_TYPE:"application/json"
             ]
- 
-            Alamofire.SessionManager.default.request(WebServicePrefix.GetWSUrl(serviceType: WSRequestType.GetSellingList),
-                                                     method: .post,
-                                                     parameters: param as? Parameters,
-                                                     encoding: JSONEncoding.default,
-                                                     headers: headers)
 
-                .responseJSON { (response:DataResponse<Any>) in
-                    NIPLProgressHUD.dismiss()
-                    switch(response.result)
-                    {
-                    case .success(_):
-                        if let data = response.result.value
+            DispatchQueue.global(qos: .background).async {
+                Alamofire.SessionManager.default.request(WebServicePrefix.GetWSUrl(serviceType: WSRequestType.GetSellingList),
+                                                         method: .post,
+                                                         parameters: param as? Parameters,
+                                                         encoding: JSONEncoding.default,
+                                                         headers: headers)
+
+                    .responseJSON { (response:DataResponse<Any>) in
+                        NIPLProgressHUD.dismiss()
+                        switch(response.result)
                         {
-                            if let responseDict = data as? [String : Any] {
+                        case .success(_):
+                            if let data = response.result.value
+                            {
+                                if let responseDict = data as? [String : Any] {
 
-                                let respObj = WSBaseSellingList.init(fromDictionary: responseDict)
-                                if let result = respObj.getSellingListResult {
-                                    if result.isnext.asStringOrEmpty(defaultValue: "0") == "0"  {
-                                        self.nextAvaialable = false
-                                    }
-                                    if let sellingListData = result.sellingList {
-                                        self.currentPageIndex += 1
-                                        var arrSellingList = [SellingList]()
-
-                                        for objSelling in sellingListData { // 4
-                                            let newSellingList = SellingList()
-
-                                            newSellingList.id = objSelling.id.aIntOrEmpty()
-                                            newSellingList.distance = objSelling.distance.asStringOrEmpty()
-                                            newSellingList.make = objSelling.make.asStringOrEmpty()
-                                            newSellingList.miles = objSelling.miles.asStringOrEmpty()
-                                            newSellingList.model = objSelling.model.asStringOrEmpty()
-                                            newSellingList.price = objSelling.price.asStringOrEmpty()
-                                            newSellingList.shareurl = objSelling.shareurl.asStringOrEmpty()
-                                            newSellingList.status = objSelling.status.asStringOrEmpty()
-                                            newSellingList.year = objSelling.year.asStringOrEmpty()
-
-                                            if let valueImages = objSelling.imagelist {
-                                                var arrImageList = [ImageList]()
-//                                                var newImageList = List<ImageList>()
-                                                for objValue in valueImages {
-                                                    let wish1 = ImageList()
-                                                    wish1.imageName = objValue
-                                                    arrImageList.append(ImageList(value: ["imageName": objValue]))
-//                                                    newImageList.append(ImageList(value: ["imageName": objValue]))
-                                                }
-
-//                                                let img1 = ImageList()
-//                                                img1.imageName = valueImages[0]
-//                                                let img2 = ImageList()
-//                                                img2.imageName = valueImages[1]
-
-                                                newSellingList.imagelists.append(objectsIn: arrImageList)
-                                            }
-                                            if let valueVideo = objSelling.videolist {
-                                                for objValue in valueVideo {
-                                                    newSellingList.videolist.append(VideoList(value: ["videoName": objValue]))
-                                                }
-                                            }
-
-                                            arrSellingList.append(newSellingList)
+                                    let respObj = WSBaseSellingList.init(fromDictionary: responseDict)
+                                    if let result = respObj.getSellingListResult {
+                                        if result.isnext.asStringOrEmpty(defaultValue: "0") == "0"  {
+                                            self.nextAvaialable = false
                                         }
+                                        if let sellingListData = result.sellingList {
+                                            self.currentPageIndex += 1
+                                            var arrSellingList = [SellingList]()
 
-                                        if arrSellingList.count > 0 {
-                                            do {
+                                            for objSelling in sellingListData { // 4
+                                                let newSellingList = SellingList()
 
-                                                let realm = try Realm()
-                                                try realm.write({ () -> Void in
-                                                    realm.add(arrSellingList, update: .modified)
-                                                })
-                                                self.sellingLists = realm.objects(SellingList.self)
-                                                self.tblCarList.reloadData()
+                                                newSellingList.id = objSelling.id.aIntOrEmpty()
+                                                newSellingList.distance = objSelling.distance.asStringOrEmpty()
+                                                newSellingList.make = objSelling.make.asStringOrEmpty()
+                                                newSellingList.miles = objSelling.miles.asStringOrEmpty()
+                                                newSellingList.model = objSelling.model.asStringOrEmpty()
+                                                newSellingList.price = objSelling.price.asStringOrEmpty()
+                                                newSellingList.shareurl = objSelling.shareurl.asStringOrEmpty()
+                                                newSellingList.status = objSelling.status.asStringOrEmpty()
+                                                newSellingList.year = objSelling.year.asStringOrEmpty()
+
+                                                if let valueImages = objSelling.imagelist {
+                                                    var arrImageList = [ImageList]()
+                                                    //                                                var newImageList = List<ImageList>()
+                                                    for objValue in valueImages {
+                                                        let wish1 = ImageList()
+                                                        wish1.imageName = objValue
+                                                        arrImageList.append(ImageList(value: ["imageName": objValue]))
+                                                        //                                                    newImageList.append(ImageList(value: ["imageName": objValue]))
+                                                    }
+
+                                                    //                                                let img1 = ImageList()
+                                                    //                                                img1.imageName = valueImages[0]
+                                                    //                                                let img2 = ImageList()
+                                                    //                                                img2.imageName = valueImages[1]
+
+                                                    newSellingList.imagelists.append(objectsIn: arrImageList)
+                                                }
+                                                if let valueVideo = objSelling.videolist {
+                                                    for objValue in valueVideo {
+                                                        newSellingList.videolist.append(VideoList(value: ["videoName": objValue]))
+                                                    }
+                                                }
+
+                                                arrSellingList.append(newSellingList)
                                             }
-                                            catch let error as NSError {
-                                                print(error.localizedDescription)
-                                            }
 
+                                            if arrSellingList.count > 0 {
+                                                do {
+
+                                                    let realm = try Realm()
+                                                    try realm.write({ () -> Void in
+                                                        realm.add(arrSellingList, update: .modified)
+                                                    })
+
+                                                    DispatchQueue.main.async {
+                                                        self.sellingLists = realm.objects(SellingList.self)
+                                                        self.tblCarList.reloadData()
+                                                    }
+                                                }
+                                                catch let error as NSError {
+                                                    print(error.localizedDescription)
+                                                }
+
+                                            }
                                         }
                                     }
                                 }
-                            }
-                            else {
-                                print("error")
-                            }
+                                else {
+                                    print("error")
+                                }
 
+                            }
+                            break
+                        case .failure(let error):
+                            print(error.localizedDescription)
+                            break
                         }
-                        break
-                    case .failure(let error):
-                        print(error.localizedDescription)
-                        break
-                    }
 
                 }
+            }
+
         }
     }
 
