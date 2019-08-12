@@ -181,21 +181,12 @@ extension MainVC {
 
                                                 if let valueImages = objSelling.imagelist {
                                                     var arrImageList = [ImageList]()
-                                                    //                                                var newImageList = List<ImageList>()
                                                     for objValue in valueImages {
-                                                        let wish1 = ImageList()
-                                                        wish1.imageName = objValue
                                                         arrImageList.append(ImageList(value: ["imageName": objValue]))
-                                                        //                                                    newImageList.append(ImageList(value: ["imageName": objValue]))
                                                     }
-
-                                                    //                                                let img1 = ImageList()
-                                                    //                                                img1.imageName = valueImages[0]
-                                                    //                                                let img2 = ImageList()
-                                                    //                                                img2.imageName = valueImages[1]
-
                                                     newSellingList.imagelists.append(objectsIn: arrImageList)
                                                 }
+
                                                 if let valueVideo = objSelling.videolist {
                                                     for objValue in valueVideo {
                                                         newSellingList.videolist.append(VideoList(value: ["videoName": objValue]))
@@ -212,9 +203,8 @@ extension MainVC {
                                                     try realm.write({ () -> Void in
                                                         realm.add(arrSellingList, update: .modified)
                                                     })
-
+                                                    self.sellingLists = realm.objects(SellingList.self)
                                                     DispatchQueue.main.async {
-                                                        self.sellingLists = realm.objects(SellingList.self)
                                                         self.tblCarList.reloadData()
                                                     }
                                                 }
@@ -229,11 +219,23 @@ extension MainVC {
                                 else {
                                     print("error")
                                 }
-
                             }
                             break
                         case .failure(let error):
                             print(error.localizedDescription)
+
+                            do {
+
+                                let realm = try Realm()
+                                self.sellingLists = realm.objects(SellingList.self)
+                                DispatchQueue.main.async {
+                                    self.tblCarList.reloadData()
+                                }
+                            }
+                            catch let error as NSError {
+                                print(error.localizedDescription)
+                            }
+
                             break
                         }
 
