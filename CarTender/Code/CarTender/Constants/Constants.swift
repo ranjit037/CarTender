@@ -27,6 +27,9 @@ let idCarListCell = "idCarListCell"
 let idCarListHeaderCell = "idCarListHeaderCell"
 let idImageListCell = "idImageListCell"
 
+// Notification Center Key
+let NC_UPDATE_CURRENT_LOCATION = "NC_UpdateCurrentLocation"
+
 enum Cell_Header_Labels:Int {
     case leading = 0
     case center
@@ -36,4 +39,9 @@ enum Cell_Header_Labels:Int {
 enum Cell_Footer_Labels:Int {
     case leading = 0
     case trailing
+}
+
+enum CAR_STATUS:String {
+    case SOLD = "SOLD"
+    case UNSOLD = "UNSOLD"
 }

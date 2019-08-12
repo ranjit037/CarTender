@@ -7,17 +7,18 @@
 //
 
 import UIKit
-
+import CoreLocation
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
-
+    var objLocManager: CLLocationManager?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
-        UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2235294118, green: 0.8235294118, blue: 0.6117647059, alpha: 1)
-        UINavigationBar.appearance().isTranslucent = false
+//        UINavigationBar.appearance().barTintColor = #colorLiteral(red: 0.2235294118, green: 0.8235294118, blue: 0.6117647059, alpha: 1)
+//        UINavigationBar.appearance().isTranslucent = false
+        self.setupLocation()
         return true
     }
 
@@ -46,3 +47,39 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 }
 
+//MARK:- Handle Location manager
+extension AppDelegate: CLLocationManagerDelegate {
+    func setupLocation() {
+        objLocManager = CLLocationManager()
+        if objLocManager != nil {
+            objLocManager!.delegate = self
+            objLocManager!.requestAlwaysAuthorization()
+            objLocManager!.requestWhenInUseAuthorization()
+            if CLLocationManager.locationServicesEnabled() {
+                objLocManager!.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+                objLocManager!.startUpdatingLocation()
+            }
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let _ = manager.location else { return }
+        objLocManager = manager
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: NC_UPDATE_CURRENT_LOCATION), object: nil)
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print (error.localizedDescription)
+    }
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        switch status {
+        case .authorizedAlways, .authorizedWhenInUse, .notDetermined:
+            break
+        case .denied:
+            break
+        case .restricted:
+            break
+        @unknown default:
+            break
+        }
+    }
+}

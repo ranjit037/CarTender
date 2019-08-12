@@ -28,6 +28,7 @@
 		07037344230059A1004CA39F /* WSBaseSellingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07037341230059A1004CA39F /* WSBaseSellingList.swift */; };
 		07037345230059A1004CA39F /* WSSellingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07037342230059A1004CA39F /* WSSellingList.swift */; };
 		07037346230059A1004CA39F /* WSGetSellingListResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07037343230059A1004CA39F /* WSGetSellingListResult.swift */; };
+		0716725E2300F87C002F2FA8 /* CLPlacemark+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0716725D2300F87C002F2FA8 /* CLPlacemark+Extension.swift */; };
 		071EB97F22FFB8350095B73B /* UINavigationBar+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071EB97E22FFB8350095B73B /* UINavigationBar+Extension.swift */; };
 		071EB98522FFB9DB0095B73B /* CarListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071EB98322FFB9DB0095B73B /* CarListCell.swift */; };
 		071EB98622FFB9DB0095B73B /* CarListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 071EB98422FFB9DB0095B73B /* CarListCell.xib */; };
@@ -36,6 +37,9 @@
 		071EB98D22FFC5130095B73B /* ImageListCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071EB98B22FFC5130095B73B /* ImageListCell.swift */; };
 		071EB98E22FFC5130095B73B /* ImageListCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 071EB98C22FFC5130095B73B /* ImageListCell.xib */; };
 		071EB99022FFCA960095B73B /* BaseVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 071EB98F22FFCA960095B73B /* BaseVC.swift */; };
+		07876951230077B7007D6D01 /* SellingList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07876950230077B7007D6D01 /* SellingList.swift */; };
+		0787695423007958007D6D01 /* ImageList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0787695323007958007D6D01 /* ImageList.swift */; };
+		0787695623007966007D6D01 /* VideoList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0787695523007966007D6D01 /* VideoList.swift */; };
 		07F085A922FF014100B1223B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F085A822FF014100B1223B /* AppDelegate.swift */; };
 		07F085AB22FF014100B1223B /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07F085AA22FF014100B1223B /* MainVC.swift */; };
 		07F085AE22FF014100B1223B /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 07F085AC22FF014100B1223B /* Main.storyboard */; };
@@ -68,6 +72,7 @@
 		07037341230059A1004CA39F /* WSBaseSellingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSBaseSellingList.swift; sourceTree = "<group>"; };
 		07037342230059A1004CA39F /* WSSellingList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSSellingList.swift; sourceTree = "<group>"; };
 		07037343230059A1004CA39F /* WSGetSellingListResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WSGetSellingListResult.swift; sourceTree = "<group>"; };
+		0716725D2300F87C002F2FA8 /* CLPlacemark+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CLPlacemark+Extension.swift"; sourceTree = "<group>"; };
 		071EB97E22FFB8350095B73B /* UINavigationBar+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationBar+Extension.swift"; sourceTree = "<group>"; };
 		071EB98322FFB9DB0095B73B /* CarListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CarListCell.swift; sourceTree = "<group>"; };
 		071EB98422FFB9DB0095B73B /* CarListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CarListCell.xib; sourceTree = "<group>"; };
@@ -76,6 +81,9 @@
 		071EB98B22FFC5130095B73B /* ImageListCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageListCell.swift; sourceTree = "<group>"; };
 		071EB98C22FFC5130095B73B /* ImageListCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageListCell.xib; sourceTree = "<group>"; };
 		071EB98F22FFCA960095B73B /* BaseVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseVC.swift; sourceTree = "<group>"; };
+		07876950230077B7007D6D01 /* SellingList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SellingList.swift; sourceTree = "<group>"; };
+		0787695323007958007D6D01 /* ImageList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageList.swift; sourceTree = "<group>"; };
+		0787695523007966007D6D01 /* VideoList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VideoList.swift; sourceTree = "<group>"; };
 		07F085A522FF014100B1223B /* CarTender.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CarTender.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07F085A822FF014100B1223B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		07F085AA22FF014100B1223B /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
@@ -156,6 +164,16 @@
 			path = CustomCell;
 			sourceTree = "<group>";
 		};
+		0787694F2300776E007D6D01 /* RealmModel */ = {
+			isa = PBXGroup;
+			children = (
+				07876950230077B7007D6D01 /* SellingList.swift */,
+				0787695323007958007D6D01 /* ImageList.swift */,
+				0787695523007966007D6D01 /* VideoList.swift */,
+			);
+			path = RealmModel;
+			sourceTree = "<group>";
+		};
 		07F0859C22FF014100B1223B = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +195,9 @@
 		07F085A722FF014100B1223B /* CarTender */ = {
 			isa = PBXGroup;
 			children = (
+				071EB98022FFB9A10095B73B /* CustomCell */,
+				07F085D122FF1D8200B1223B /* Resource */,
+				07F085DC22FF226C00B1223B /* Extension */,
 				07F085B422FF014300B1223B /* Info.plist */,
 				07F085D022FF1D7C00B1223B /* Model */,
 				07F085CD22FF1C5800B1223B /* Constants */,
@@ -233,10 +254,8 @@
 		07F085D022FF1D7C00B1223B /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				0787694F2300776E007D6D01 /* RealmModel */,
 				0703734723006052004CA39F /* WebServices */,
-				071EB98022FFB9A10095B73B /* CustomCell */,
-				07F085DC22FF226C00B1223B /* Extension */,
-				07F085D122FF1D8200B1223B /* Resource */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -256,6 +275,7 @@
 				0703731B2300522E004CA39F /* Optional+Extensions.swift */,
 				07F085DD22FF228500B1223B /* UIViewController+Extension.swift */,
 				071EB97E22FFB8350095B73B /* UINavigationBar+Extension.swift */,
+				0716725D2300F87C002F2FA8 /* CLPlacemark+Extension.swift */,
 			);
 			path = Extension;
 			sourceTree = "<group>";
@@ -407,6 +427,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0787695623007966007D6D01 /* VideoList.swift in Sources */,
 				070373392300535E004CA39F /* IndefiniteAnimatedView.swift in Sources */,
 				07037345230059A1004CA39F /* WSSellingList.swift in Sources */,
 				071EB98522FFB9DB0095B73B /* CarListCell.swift in Sources */,
@@ -415,6 +436,8 @@
 				0703733E2300535E004CA39F /* NIPLProgressHUD.swift in Sources */,
 				0703731C2300522F004CA39F /* Optional+Extensions.swift in Sources */,
 				07F085AB22FF014100B1223B /* MainVC.swift in Sources */,
+				07876951230077B7007D6D01 /* SellingList.swift in Sources */,
+				0787695423007958007D6D01 /* ImageList.swift in Sources */,
 				071EB99022FFCA960095B73B /* BaseVC.swift in Sources */,
 				07037346230059A1004CA39F /* WSGetSellingListResult.swift in Sources */,
 				07F085A922FF014100B1223B /* AppDelegate.swift in Sources */,
@@ -423,6 +446,7 @@
 				071EB97F22FFB8350095B73B /* UINavigationBar+Extension.swift in Sources */,
 				070373142300507A004CA39F /* Constants_Web.swift in Sources */,
 				07F085CF22FF1C6400B1223B /* Constants.swift in Sources */,
+				0716725E2300F87C002F2FA8 /* CLPlacemark+Extension.swift in Sources */,
 				0703733D2300535E004CA39F /* RadialGradientLayer.swift in Sources */,
 				070373362300535E004CA39F /* ProgressAnimatedView.swift in Sources */,
 			);

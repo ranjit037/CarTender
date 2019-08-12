@@ -17,7 +17,7 @@ class WSSellingList : NSObject, NSCoding{
     var price : String?
     var shareurl : String?
     var status : String?
-    var videolist : [AnyObject]?
+    var videolist : [String]?
     var year : String?
 
 
@@ -87,7 +87,7 @@ class WSSellingList : NSObject, NSCoding{
         price = aDecoder.decodeObject(forKey: "price") as? String
         shareurl = aDecoder.decodeObject(forKey: "shareurl") as? String
         status = aDecoder.decodeObject(forKey: "status") as? String
-        videolist = aDecoder.decodeObject(forKey: "videolist") as? [AnyObject]
+        videolist = aDecoder.decodeObject(forKey: "videolist") as? [String]
         year = aDecoder.decodeObject(forKey: "year") as? String
     }
 

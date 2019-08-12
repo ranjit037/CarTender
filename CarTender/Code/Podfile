@@ -9,5 +9,4 @@ target 'CarTender' do
 	pod 'RealmSwift'
 	pod 'SDWebImage'
   pod 'Alamofire'
-  pod 'SwiftyJSON'
 end
